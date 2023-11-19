@@ -60,8 +60,8 @@ all: main-build
 main-build: test_servo.elf secondary-outputs
 
 # Tool invocations
-test_servo.elf test_servo.map: $(OBJS) $(USER_OBJS) C:\Users\valen\STM32CubeIDE\workspace_1.13.2\test_servo\STM32F429ZITX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "test_servo.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\valen\STM32CubeIDE\workspace_1.13.2\test_servo\STM32F429ZITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="test_servo.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+test_servo.elf test_servo.map: $(OBJS) $(USER_OBJS) C:\Users\valen\OneDrive\Desktop\Git_Repos\projektpraktikum\test\test_servo\STM32F429ZITX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "test_servo.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\valen\OneDrive\Desktop\Git_Repos\projektpraktikum\test\test_servo\STM32F429ZITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="test_servo.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

@@ -19,6 +19,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "string.h"
+#include "servo.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -108,7 +109,9 @@ int main(void)
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
 //  HAL_TIM_Base_Start_IT(&htim2);
-  HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
+  servo_start_init(&htim2, TIM_CHANNEL_2);
+  servo_reset();
+
 
   /* USER CODE END 2 */
 
@@ -116,18 +119,9 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  for(uint32_t pulse = 50; pulse < 250; pulse ++){
-		  __HAL_TIM_SET_COMPARE(&htim2,TIM_CHANNEL_2,pulse);
-		  HAL_Delay(10);
 
-	  }
-	  for(uint32_t pulse = 250; pulse > 50; pulse --){
-		  __HAL_TIM_SET_COMPARE(&htim2,TIM_CHANNEL_2,pulse);
-		  HAL_Delay(10);
-
-	  }
     /* USER CODE END WHILE */
-
+	  servo_demo();
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
