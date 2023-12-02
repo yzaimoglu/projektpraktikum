@@ -1,0 +1,6 @@
+../Core/Src/ldr.c:6:6:ldr_init	1
+../Core/Src/ldr.c:9:6:ldr_stop	1
+../Core/Src/ldr.c:13:10:ldr_get_value	2
+../Core/Src/ldr.c:26:9:ldr_get_percent	2
+../Core/Src/ldr.c:39:6:ldr_uart_transmit	1
+../Core/Src/ldr.c:46:6:ldr_uart_transmit_perc	1
