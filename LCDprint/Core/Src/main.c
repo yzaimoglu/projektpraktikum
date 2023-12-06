@@ -19,6 +19,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "string.h"
+#include "stdio.h"
 #include "lcd.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -47,6 +48,8 @@ ETH_TxPacketConfig TxConfig;
 ETH_DMADescTypeDef  DMARxDscrTab[ETH_RX_DESC_CNT]; /* Ethernet Rx DMA Descriptors */
 ETH_DMADescTypeDef  DMATxDscrTab[ETH_TX_DESC_CNT]; /* Ethernet Tx DMA Descriptors */
 
+ADC_HandleTypeDef hadc1;
+
 ETH_HandleTypeDef heth;
 
 I2C_HandleTypeDef hi2c2;
@@ -66,6 +69,7 @@ static void MX_ETH_Init(void);
 static void MX_USART3_UART_Init(void);
 static void MX_USB_OTG_FS_PCD_Init(void);
 static void MX_I2C2_Init(void);
+static void MX_ADC1_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -77,12 +81,15 @@ static void MX_I2C2_Init(void);
 
 /**
   * @brief  The application entry point.
-  * @retval int
+  * uint8_t voltage;
   */
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-
+	uint16_t raw;
+	float voltage;
+	char voltageMsg[20];
+	char msg[20];
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -107,6 +114,7 @@ int main(void)
   MX_USART3_UART_Init();
   MX_USB_OTG_FS_PCD_Init();
   MX_I2C2_Init();
+  MX_ADC1_Init();
   /* USER CODE BEGIN 2 */
   LCD_HandleTypeDef lcd_handle;
   lcd_handle.i2c_addr = LCD_DEFAULT_ADDR; // Set the LCD I2C address
@@ -114,7 +122,7 @@ int main(void)
   lcd_handle.backlight_enable = true;
   LCD_Begin(&lcd_handle);
 
-  LCD_Print(&lcd_handle, "Hello World");
+//  LCD_Print(&lcd_handle, "Hello World");
 
   /* USER CODE END 2 */
 
@@ -122,6 +130,39 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_SET);
+
+	  // Get ADC value
+	  HAL_ADC_Start(&hadc1);
+	  HAL_ADC_PollForConversion(&hadc1, HAL_MAX_DELAY);
+	  raw = HAL_ADC_GetValue(&hadc1);
+
+	  voltage = (float)raw * 3.3f / 4095.0f * 1000.0f;
+	  int voltageInt = (int)(voltage);
+	  int voltageFrac = (int)((voltage - voltageInt) * 100);
+	  // Test: Set GPIO pin low
+	  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_RESET);
+
+	  //sprintf(msg, "bitvalue: %d", voltage);
+	  sprintf(voltageMsg, "Voltage: %d.%02d mV", voltageInt, voltageFrac);
+	  HAL_UART_Transmit(&huart3, (uint8_t*)msg, strlen(msg), HAL_MAX_DELAY);
+
+		// Display voltage
+	  sprintf(voltageMsg, "Voltage:%d.%02dmV", voltageInt, voltageFrac);
+	  //snprintf(voltageMsg, sizeof(voltageMsg), "Voltage: %.2f mV", voltage);
+	  LCD_SetCursor(&lcd_handle, 0, 0);
+      LCD_Printf(&lcd_handle, voltageMsg);
+	  /*
+	  // Convert to string and print
+	  sprintf(msg, "bitvalue: %d", raw);
+	  HAL_UART_Transmit(&huart3, (uint8_t*)msg, strlen(msg), HAL_MAX_DELAY);
+
+	  LCD_SetCursor(&lcd_handle, 0, 0);
+	  LCD_Printf(&lcd_handle, "Bitvalue: %d", raw);
+	  */
+
+	  // Pretend we have to do something else for a while
+	  HAL_Delay(1000);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -172,6 +213,58 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+}
+
+/**
+  * @brief ADC1 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_ADC1_Init(void)
+{
+
+  /* USER CODE BEGIN ADC1_Init 0 */
+
+  /* USER CODE END ADC1_Init 0 */
+
+  ADC_ChannelConfTypeDef sConfig = {0};
+
+  /* USER CODE BEGIN ADC1_Init 1 */
+
+  /* USER CODE END ADC1_Init 1 */
+
+  /** Configure the global features of the ADC (Clock, Resolution, Data Alignment and number of conversion)
+  */
+  hadc1.Instance = ADC1;
+  hadc1.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV4;
+  hadc1.Init.Resolution = ADC_RESOLUTION_12B;
+  hadc1.Init.ScanConvMode = DISABLE;
+  hadc1.Init.ContinuousConvMode = DISABLE;
+  hadc1.Init.DiscontinuousConvMode = DISABLE;
+  hadc1.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
+  hadc1.Init.ExternalTrigConv = ADC_SOFTWARE_START;
+  hadc1.Init.DataAlign = ADC_DATAALIGN_RIGHT;
+  hadc1.Init.NbrOfConversion = 1;
+  hadc1.Init.DMAContinuousRequests = DISABLE;
+  hadc1.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
+  if (HAL_ADC_Init(&hadc1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
+  */
+  sConfig.Channel = ADC_CHANNEL_3;
+  sConfig.Rank = 1;
+  sConfig.SamplingTime = ADC_SAMPLETIME_3CYCLES;
+  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN ADC1_Init 2 */
+
+  /* USER CODE END ADC1_Init 2 */
+
 }
 
 /**
