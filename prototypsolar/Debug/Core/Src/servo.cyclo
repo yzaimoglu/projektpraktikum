@@ -1,0 +1,6 @@
+../Core/Src/servo.c:18:13:set_Pulse	6
+../Core/Src/servo.c:28:13:set_Servospeed	1
+../Core/Src/servo.c:34:19:servo_start_init	1
+../Core/Src/servo.c:43:6:servo_reset	1
+../Core/Src/servo.c:50:10:servo_rot	8
+../Core/Src/servo.c:72:6:servo_demo	3
