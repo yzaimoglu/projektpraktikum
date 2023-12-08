@@ -41,7 +41,8 @@ HAL_StatusTypeDef servo_start_init(TIM_HandleTypeDef *htim, uint32_t Channel);
 
 void servo_reset();
 
-// Implementation for -100 <= sensorval <= 100
+// Implementation for -4059 <= sensorval <= 4095
+// return is current pulse width in 10E-5 s
 uint16_t servo_rot(int16_t sensorval);
 
 

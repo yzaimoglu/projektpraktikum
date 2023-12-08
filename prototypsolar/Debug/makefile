@@ -60,8 +60,8 @@ all: main-build
 main-build: prototypsolar.elf secondary-outputs
 
 # Tool invocations
-prototypsolar.elf prototypsolar.map: $(OBJS) $(USER_OBJS) C:\Users\valen\STM32CubeIDE\workspace_1.13.2\prototypsolar\STM32F429ZITX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "prototypsolar.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\valen\STM32CubeIDE\workspace_1.13.2\prototypsolar\STM32F429ZITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="prototypsolar.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+prototypsolar.elf prototypsolar.map: $(OBJS) $(USER_OBJS) C:\Users\valen\OneDrive\Desktop\Git_Repos\projektpraktikum\prototypsolar\STM32F429ZITX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "prototypsolar.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\valen\OneDrive\Desktop\Git_Repos\projektpraktikum\prototypsolar\STM32F429ZITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="prototypsolar.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

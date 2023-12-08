@@ -6,5 +6,6 @@
 ../Core/Src/lcd.c:91:19:LCD_Begin	4
 ../Core/Src/lcd.c:113:19:LCD_SetCursor	4
 ../Core/Src/lcd.c:122:19:LCD_Printf	1
-../Core/Src/lcd.c:131:19:LCD_Clear	1
-../Core/Src/lcd.c:135:19:LCD_SetBacklight	1
+../Core/Src/lcd.c:130:19:LCD_Print_Solar_Voltage	1
+../Core/Src/lcd.c:141:19:LCD_Clear	1
+../Core/Src/lcd.c:145:19:LCD_SetBacklight	1

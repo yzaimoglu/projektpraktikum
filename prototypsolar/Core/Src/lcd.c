@@ -127,6 +127,16 @@ HAL_StatusTypeDef LCD_Printf(LCD_HandleTypeDef *dev, const char *format, ...) {
 	va_end(args);
 	return LCD_Print(dev, lcd_buffer);
 }
+HAL_StatusTypeDef LCD_Print_Solar_Voltage(LCD_HandleTypeDef lcd_handle, uint16_t solar_value){
+	char voltageMsg[20];
+	float voltage = (float)solar_value * 3.3f / 4095.0f * 1000.0f;
+	int voltageInt = (int)(voltage);
+	int voltageFrac = (int)((voltage - voltageInt) * 10);
+	sprintf(voltageMsg, "Voltage:%d.%01dmV", voltageInt, voltageFrac);
+	LCD_SetCursor(&lcd_handle, 0, 0);
+	return LCD_Printf(&lcd_handle, voltageMsg);
+
+}
 
 HAL_StatusTypeDef LCD_Clear(LCD_HandleTypeDef *dev) {
 	return _LCD_SendCommand(dev, 0b00000001);

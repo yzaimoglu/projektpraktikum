@@ -28,6 +28,9 @@ typedef struct  {
 	bool backlight_enable;
 } LCD_HandleTypeDef;
 
+
+
+
 /**
  * Initialize the display. Must be called before any other function can be used.
  *
@@ -51,6 +54,10 @@ HAL_StatusTypeDef LCD_Print(LCD_HandleTypeDef *dev, const char* str);
  * Send text to the display. See printf for formatting details.
  */
 HAL_StatusTypeDef LCD_Printf(LCD_HandleTypeDef *dev, const char *format, ...);
+/**
+ * Format and print voltage Value
+ */
+HAL_StatusTypeDef LCD_Print_Solar_Voltage(LCD_HandleTypeDef lcd_handle,uint16_t solar_value);
 /**
  * Clear the display
  */

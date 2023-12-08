@@ -123,44 +123,50 @@ int main(void)
   MX_ADC3_Init();
   MX_I2C2_Init();
   /* USER CODE BEGIN 2 */
-  char voltageMsg[20];
+  // LCD Initilization
   LCD_HandleTypeDef lcd_handle = {
 		  .i2c_addr = LCD_DEFAULT_ADDR,
   	  	  .i2c = &hi2c2,
   	  	  .backlight_enable = true };
   LCD_Begin(&lcd_handle);
+  uint8_t lcd_refresh_iterator = 0; // Used to slow refresh rate of lcd display
+
+  // servo Initilization
   servo_start_init(&htim2, TIM_CHANNEL_2);
   servo_reset();
 
-  uint8_t iterator = 0;
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  iterator++;
-	  uint16_t first = ldr_get_value(hadc1, 0);
-	  uint16_t second = ldr_get_value(hadc2, 0);
-	  int16_t per_diff = first - second;
-	  uint16_t currentpulse = servo_rot(per_diff);
+	  // read sensor values
+	  uint16_t ldr1_value = ldr_get_value(hadc1, 0);
+	  uint16_t ldr2_value = ldr_get_value(hadc2, 0);
 	  uint16_t solar_value = ldr_get_value(hadc3, 0);
-	  if(iterator % 75 == 0) {
-		  float voltage = (float)solar_value * 3.3f / 4095.0f * 1000.0f;
-		  int voltageInt = (int)(voltage);
-		  int voltageFrac = (int)((voltage - voltageInt) * 10);
-		  sprintf(voltageMsg, "Voltage:%d.%01dmV", voltageInt, voltageFrac);
-		  //snprintf(voltageMsg, sizeof(voltageMsg), "Voltage: %.2f mV", voltage);
-		  LCD_SetCursor(&lcd_handle, 0, 0);
-		  LCD_Printf(&lcd_handle, voltageMsg);
+
+	  // creates function parameter and rotates solar tray accordingly
+	  int16_t ldr_diff = ldr1_value - ldr2_value;
+	  uint16_t currentpulse = servo_rot(ldr_diff);
+
+	  //Displays solarpanel voltage with slowed refresh rate
+	  if(lcd_refresh_iterator % 75 == 0) {
+		  LCD_Print_Solar_Voltage(lcd_handle, solar_value);
+		  lcd_refresh_iterator = 0;
 	  }
+	  //reset servo to horizontal position if User Button is pressed
 	  if(HAL_GPIO_ReadPin(USER_Btn_GPIO_Port, USER_Btn_Pin) == GPIO_PIN_SET) {
 		  servo_reset();
 	  }
-	  char buf[50];
-	  sprintf(buf, "Pulse: %lu\r\n", currentpulse);
-	  HAL_UART_Transmit(&huart3, (uint8_t*)buf, strlen(buf), 1000);
-//	  servo_demo();
+
+	  // UART Debug
+//	  char buf[50];
+//	  sprintf(buf, "Pulse: %lu\r\n", currentpulse);
+//	  HAL_UART_Transmit(&huart3, (uint8_t*)buf, strlen(buf), 1000);
+
+	  lcd_refresh_iterator ++;
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
