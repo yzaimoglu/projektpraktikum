@@ -56,6 +56,7 @@ uint16_t servo_rot(int16_t sensorval)
 
 	// Checks if pulse is in allowed range (0.5-2.5ms)
 	if(currentpulse + i <= UPPER_PULSE_LIMIT && currentpulse + i >= LOWER_PULSE_LIMIT){
+		currentpulse = currentpulse + i;
 		__HAL_TIM_SET_COMPARE(timhandle,channel,currentpulse);
 	}
 

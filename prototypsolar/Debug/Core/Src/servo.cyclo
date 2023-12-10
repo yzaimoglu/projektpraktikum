@@ -3,4 +3,4 @@
 ../Core/Src/servo.c:34:19:servo_start_init	1
 ../Core/Src/servo.c:43:6:servo_reset	1
 ../Core/Src/servo.c:50:10:servo_rot	8
-../Core/Src/servo.c:68:6:servo_demo	3
+../Core/Src/servo.c:69:6:servo_demo	3
